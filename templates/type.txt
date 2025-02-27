@@ -1,0 +1,9 @@
+import { z } from "zod";
+
+export const [schemakey]Schema = z.object({
+  vendorName: z.string().max(100),
+  contactEmail: z.string().max(100).optional(),
+});
+
+export type [schemakey]= z.infer<typeof [schemakey]Schema>;
+

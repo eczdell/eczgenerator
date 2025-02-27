@@ -1,0 +1,88 @@
+## create file and folders
+
+cat accounting.json | jq -r '.paths | keys | map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do mkdir -p "./app/$path"  # Create the directory
+  touch "./app/$path/page.tsx"  # Create the file inside it
+done
+
+## remove file except  accounting.json
+find . -mindepth 1 ! -name "accounting.json" -exec rm -rf {} +
+
+
+-------------------
+
+cat accounting.json | jq -r '.components.schemas| keys| map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do
+  mkdir -p "./types/$path"  # Create the directory
+  touch "./types/$path/type.ts"  # Create the file inside it
+done
+
+ cat accounting.json | jq '.components.schemas.VendorToUpdate.properties'
+
+$ cat accounting.json | jq -r '.components.schemas.VendorToUpdate.properties | to_entries | map("\(.key): z.string().max(\(.value.maxLength))") | join(",\n")'
+vendorName: z.string().max(100),
+contactEmail: z.string().max(100),
+phone: z.string().max(20),
+billingAddress: z.string().max(255)
+
+------------------
+$ cat accounting.json | jq -r '.components.schemas | to_entries[] | "\(.key): \(.value.properties | to_entries | map("\(.key): z.string().max(\(.value.maxLength))") | join(",\n"))"'
+
+
+---------------------
+cat accounting.json | jq -r '
+  .components.schemas.VendorToUpdate.properties 
+  | to_entries 
+  | map("\(.key): z.string().max(\(.value.maxLength))\(.value | has("maxLength") | if . then ".optional()" else "" end)") 
+  | join(",\n  ") 
+  | "export const VendorToUpdateSchema = z.object({\n  " + . + "\n});"'
+
+  -------------------------
+
+  import { z } from "zod";
+
+export const VendorToCreateSchema = z.object({
+  vendorName: z.string().max(100).optional(),
+  contactEmail: z.string().max(100).optional(),
+  phone: z.string().max(20).optional(),
+  billingAddress: z.string().max(255).optional()
+});
+
+export type VendorToCreate = z.infer<typeof VendorToCreateSchema>;
+import { z } from "zod";
+
+export const VendorToUpdateSchema = z.object({
+  vendorName: z.string().max(100).optional(),
+  contactEmail: z.string().max(100).optional(),
+  phone: z.string().max(20).optional(),
+  billingAddress: z.string().max(255).optional()
+});
+
+export type VendorToUpdate = z.infer<typeof VendorToUpdateSchema>;
+eczdell@archlinux ~/personal/next-15/test
+$ cat accounting.json | jq -r '
+  .components.schemas
+  | to_entries[]
+  | "import { z } from \"zod\";\n\nexport const \(.key)Schema = z.object({\n  " +
+    (.value.properties
+      | to_entries
+      | map("\(.key): z.string().max(\(.value.maxLength)).optional()")
+      | join(",\n  ")
+    ) +
+  "\n});\n\nexport type \(.key) = z.infer<typeof \(.key)Schema>;"
+'
+
+----------------------
+
+## create file and folders
+cat accounting.json | jq -r '.paths | keys | map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do mkdir -p "./app/$path"  # Create the directory
+  touch "./app/$path/page.tsx"  # Create the file inside it
+done
+
+-----------------------
+ cat accounting.json | jq -r '.paths | keys | map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do   mkdir -p "./app/$path"  # Create the directory
+  file="./app/$path/page.tsx"  # Define file path
+
+  cp pageTemplate.txt "$file"; done
+-----------------------
+
+czdell@archlinux ~/personal/next-15/test
+echmod +x ./script/*.sh
