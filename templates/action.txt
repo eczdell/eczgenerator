@@ -1,0 +1,14 @@
+// src/app/actions/fetchData.ts
+'use server';
+const base_url = "https://api.example.com"
+import { $Account} from "@/types/$Account";
+
+export async function fetch$AccountData(): Promise<$Account[]> {
+  const response = await fetch(`${base_url}/$Account`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch $Account');
+  }
+  return response.json();
+}
+
+

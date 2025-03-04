@@ -1,12 +1,30 @@
-cat accounting.json | jq -r '.paths | keys | map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do
+#!/bin/bash
+
+# Exit if any command fails
+set -e
+
+# Check if the arguments (JSON file and project name) are provided
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "Usage: $0 <path_to_accounting.json> <project_name>"
+  exit 1
+fi
+
+# Get the arguments
+JSON_FILE="$1"
+PROJECT_NAME="$2"
+
+# Read paths from accounting.json and create directories & files
+cat "$JSON_FILE" | jq -r '.paths | keys | map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do
   # Transform path: remove '/', capitalize segments, and join
   formatted_path=$(echo "$path" | awk -F'/' '{for (i=1; i<=NF; i++) $i=toupper(substr($i,1,1)) substr($i,2)}1' OFS='')
 
-  mkdir -p "./app/$path"  # Create the directory
-  file="./app/$path/columns.tsx"  # Define file path
+  # Create the directory under the project folder
+  mkdir -p "./$PROJECT_NAME/src/app/$path"  # Create the directory
+  file="./$PROJECT_NAME/src/app/$path/columns.tsx"  # Define file path
 
-  # Replace $Account with formatted path and save to page.tsx
+  # Replace $Account with formatted path and save to columns.tsx
   sed "s|\$Account|$formatted_path|g" ./templates/columns.txt > "$file"
 done
 
+echo "Columns generated successfully under $PROJECT_NAME/src/app/"
 

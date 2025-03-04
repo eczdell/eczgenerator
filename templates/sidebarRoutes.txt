@@ -1,0 +1,19 @@
+
+const sidebarData = {
+  versions: ["1.0.1"],
+  navMain: [
+    {
+      title: "Chart of Accounts",
+      url: "#",
+      items: [
+        { title: "View All",
+        url: "/chartofaccounts",
+        isActive: true
+        },
+      ],
+    }
+  ],
+};
+export default sidebarData;
+
+
