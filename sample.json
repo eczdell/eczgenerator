@@ -1,0 +1,82 @@
+{
+  "components": {
+    "schemas": {
+      "CustomerToCreate": {
+        "required": [
+          "customerName"
+        ],
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "contactEmail": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "phone": {
+            "maxLength": 20,
+            "type": "string"
+          },
+          "billingAddress": {
+            "maxLength": 255,
+            "type": "string"
+          }
+        }
+      },
+      "InvoiceToUpdate": {
+        "type": "object",
+        "properties": {
+          "customerID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "transactionID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "VendorToUpdate": {
+        "required": [
+          "vendorName"
+        ],
+        "type": "object",
+        "properties": {
+          "vendorName": {
+            "type": "string",
+            "enum":["1","2","3"]
+          },
+          "contactEmail": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "phone": {
+            "maxLength": 20,
+            "type": "string"
+          },
+          "billingAddress": {
+            "maxLength": 255,
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
