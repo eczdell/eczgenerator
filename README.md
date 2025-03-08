@@ -13,4 +13,14 @@ $
 
 
 
-
+## 
+Swagger 
+-> to zod type with ts interfaces 
+-> to sample faker object
+-> actions (api call)
+-> mock api creaton
+-> sidebar routes
+-> pages
+-> custom use hook function(using ts generic)
+-> table columns 
+-> uml diagram 

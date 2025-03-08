@@ -1,2 +1,0 @@
- jq -r '.paths | to_entries | map({endpoint: .key, operations: (.value | to_entries | map({verb: .key, details: .value}))})' accounting.json
-

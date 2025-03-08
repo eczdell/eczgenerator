@@ -6,44 +6,48 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-# Read the Swagger JSON file
 SWAGGER_FILE="$1"
+OUTPUT_FILE="fakerFactory.js"
 
-# Generate sample values based on the type
+# Generate sample values based on type
 jq -r '
   def generate_faker_sample(type):
     if type == "string" then
-      "faker.lorem.word()"
+      "faker.word.noun()"
     elif type == "number" then
-      "faker.datatype.number()"
+      "faker.number.float({ min: 10, max: 1000,fractionDigits: 2 })"
     elif type == "integer" then
-      "faker.datatype.number({ min: 1, max: 100 })"
+      "faker.number.int({ min: 1, max: 100 })"
     elif type == "boolean" then
       "faker.datatype.boolean()"
     elif type == "array" then
-      "faker.datatype.array()"
+      "[]"
     elif type == "object" then
-      "{}"  # Empty object for simplicity
+      "{}"
     elif type == "date" then
-      "faker.date.recent()"
+      "faker.date.past().toISOString()"
     elif type == "datetime" then
-      "faker.date.recent().toISOString()"
+      "faker.date.future().toISOString()"
     else
-      "faker.random.word()"
+      "faker.word.noun()"
     end;
 
-  .components.schemas
-  | to_entries
-  | map("\(.key): { 
-    " + (
-      .value.properties
-      | to_entries
-      | map(
-        "\(.key): " + (
-          generate_faker_sample(.value.type)
-        )
+  "import { faker } from \"@faker-js/faker\";\n\n"
+  +
+  (
+    .components.schemas
+    | to_entries
+    | map(
+        "export const generate\(.key) = () => ({\n  " + (
+          .value.properties
+          | to_entries
+          | map("\(.key): " + generate_faker_sample(.value.type))
+          | join(",\n  ")
+        ) + "\n});"
       )
-      | join(", ")
-    ) + " }"
-  )' "$SWAGGER_FILE"
+    | join("\n\n")
+  )
+' "$SWAGGER_FILE" > "$OUTPUT_FILE"
+
+echo "Faker factory file generated: $OUTPUT_FILE"
 

@@ -7,6 +7,10 @@
         ],
         "type": "object",
         "properties": {
+          "userName": {
+            "maxLength": 100,
+            "type": "string"
+          },
           "customerName": {
             "maxLength": 100,
             "type": "string"
