@@ -24,24 +24,25 @@ fi
 
 SCRIPT_DIR="$(dirname "$0")"
 
-# Run generateTypes.sh with project name and JSON file
+# Run all generation scripts
 echo "Running generateTypes.sh..."
 "$SCRIPT_DIR/generateTypes.sh" "$JSON_FILE" "$PROJECT_NAME"
 
-# Run generateColumns.sh with project name and JSON file
 echo "Running generateColumns.sh..."
 "$SCRIPT_DIR/generateColumns.sh" "$JSON_FILE" "$PROJECT_NAME"
 
-# Run generatePage.sh with project name and JSON file
 echo "Running generatePage.sh..."
 "$SCRIPT_DIR/generatePage.sh" "$JSON_FILE" "$PROJECT_NAME"
 
-# Run generate_sidebar.sh with project name and JSON file
 echo "Running generate_sidebar.sh..."
 "$SCRIPT_DIR/generate_sidebar.sh" "$JSON_FILE" "$PROJECT_NAME"
 
-# Run generateActions.sh with project name and JSON file
 echo "Running generateActions.sh..."
 "$SCRIPT_DIR/generateActions.sh" "$JSON_FILE" "$PROJECT_NAME"
 
+# Run generateFactory.sh to generate the faker factory
+echo "Running generateFactory.sh..."
+"$SCRIPT_DIR/generateFaker.sh" "$JSON_FILE" "$PROJECT_NAME"
+
 echo "All scripts executed successfully!"
+

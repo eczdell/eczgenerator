@@ -1,21 +1,35 @@
 #!/bin/bash
 
-# Check if filename is provided
-if [ -z "$1" ]; then
-  echo "Usage: $0 <swagger-json-file>"
+# Check if the arguments (JSON file and project name) are provided
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "Usage: $0 <path_to_accounting.json> <project_name>"
   exit 1
 fi
 
-SWAGGER_FILE="$1"
-OUTPUT_FILE="fakerFactory.js"
+# Get the arguments
+accounting_json="$1"
+project_name="$2"
 
-# Generate sample values based on type
+# Set the dynamic output file path using the project name
+output_file="${project_name}/src/fakerFactory.ts"  # Project name added to the path
+
+# Create the directory if it does not exist
+output_dir=$(dirname "$output_file")
+mkdir -p "$output_dir"  # This creates the directory if it doesn't exist
+
+# Check if accounting.json exists
+if [ ! -f "$accounting_json" ]; then
+  echo "Error: accounting.json file not found at $accounting_json"
+  exit 1
+fi
+
+# Generate faker factory using jq
 jq -r '
   def generate_faker_sample(type):
     if type == "string" then
       "faker.word.noun()"
     elif type == "number" then
-      "faker.number.float({ min: 10, max: 1000,fractionDigits: 2 })"
+      "faker.number.float({ min: 10, max: 1000, fractionDigits: 2 })"
     elif type == "integer" then
       "faker.number.int({ min: 1, max: 100 })"
     elif type == "boolean" then
@@ -47,7 +61,8 @@ jq -r '
       )
     | join("\n\n")
   )
-' "$SWAGGER_FILE" > "$OUTPUT_FILE"
+' "$accounting_json" > "$output_file"
 
-echo "Faker factory file generated: $OUTPUT_FILE"
+# Confirmation message
+echo "The faker factory file has been generated and saved to $output_file"
 
