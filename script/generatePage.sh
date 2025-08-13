@@ -15,8 +15,8 @@ project_name="$2"
 
 # Read paths from accounting.json and create directories & files
 cat "$json_file" | jq -r '.paths | keys | map(gsub("\\{"; "[") | gsub("\\}"; "]")) | .[]' | while read -r path; do
-  # Transform path: remove '/', capitalize segments, and join
-  formatted_path=$(echo "$path" | awk -F'/' '{for (i=1; i<=NF; i++) $i=toupper(substr($i,1,1)) substr($i,2)}1' OFS='')
+  # Replace `{}` with `[]` but keep original casing
+  formatted_path=$(echo "$path" | sed 's/{/[/g; s/}/]/g')
 
   # Create directory with project name
   mkdir -p "./$project_name/src/app/$formatted_path"  # Create the directory

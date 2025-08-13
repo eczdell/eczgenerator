@@ -1,4 +1,3 @@
-
 const sidebarData = {
   versions: ["1.0.1"],
   navMain: [
@@ -15,5 +14,3 @@ const sidebarData = {
   ],
 };
 export default sidebarData;
-
-
